@@ -61,7 +61,7 @@ class Platformer extends Phaser.Scene {
         this.water = this.map.createFromObjects("Objects", {
             name: "water",
             key: "tilemap_sheet",
-            frame: 67
+            frame: 53
         });
 
         this.bottomFlag = this.map.createFromObjects("Objects", {
@@ -92,9 +92,6 @@ class Platformer extends Phaser.Scene {
 
         // Enable collision handling
         this.physics.add.collider(my.sprite.player, this.groundLayer);
-        this.physics.add.overlap(my.sprite.player, this.water, (obj1, obj2) => {
-            alert("hej");
-        });
 
         // Handle collision detection with coins
         this.physics.add.overlap(my.sprite.player, this.coinGroup, (obj1, obj2) => {
@@ -108,7 +105,7 @@ class Platformer extends Phaser.Scene {
         });
 
         this.physics.add.overlap(my.sprite.player, this.water, (obj1, obj2) => {
-            alert("You hit the water and died");
+            this.scene.restart();
         });
 
         // set up Phaser-provided cursor key input

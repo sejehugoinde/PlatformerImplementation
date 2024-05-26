@@ -90,14 +90,12 @@ class Platformer extends Phaser.Scene {
         my.sprite.player.setCollideWorldBounds(true);
 
         // Enable collision handling
-    this.physics.add.collider(my.sprite.player, this.groundLayer, () => {
-        // If player collides with anything other than water, reset the flag to false
-        this.touchedSomething = false;
-        console.log("Player collided with ground");
-    });        this.physics.add.collider(my.sprite.player, this.waterLayer, () => {
+        this.physics.add.collider(my.sprite.player, this.groundLayer, () => {
+            // If player collides with anything other than water, reset the flag to false
+            this.touchedSomething = false;
+        }); this.physics.add.collider(my.sprite.player, this.waterLayer, () => {
             // If player collides with water, set the flag to true
             this.touchedSomething = true;
-            console.log("Player collided with water");
         });
         // Handle collision detection with coins
         this.physics.add.overlap(my.sprite.player, this.coinGroup, (obj1, obj2) => {
@@ -199,18 +197,18 @@ class Platformer extends Phaser.Scene {
         // Check if the player has already collided with water in this interaction cycle
         if (!this.flag) {
             // Check if the player has touched something other than water before touching water again
-                // Decrease health by 1
-                this.myHealth -= 1;
-                my.text.health.setText("Health: " + this.myHealth);
+            // Decrease health by 1
+            this.myHealth -= 1;
+            my.text.health.setText("Health: " + this.myHealth);
 
             // Set the flag to true to indicate that the player has collided with water in this interaction cycle
             this.flag = true;
         }
-    
+
         // Start end scene if health reaches 0
         if (this.myHealth <= 0) {
             this.scene.start("endScene", { score: this.myScore });
         }
     }
-    
+
 }

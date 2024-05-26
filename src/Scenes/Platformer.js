@@ -89,20 +89,31 @@ class Platformer extends Phaser.Scene {
         my.sprite.player = this.physics.add.sprite(30, 200, "platformer_characters", "tile_0000.png");
         my.sprite.player.setCollideWorldBounds(true);
 
+        // set up enemy avatar
+        my.sprite.enemy = this.physics.add.sprite(800, 200, "platformer_characters", "tile_0020.png");
+        my.sprite.enemy.setCollideWorldBounds(true);
+
         // Enable collision handling
         this.physics.add.collider(my.sprite.player, this.groundLayer, () => {
             // If player collides with anything other than water, reset the flag to false
             this.touchedSomething = false;
-        }); this.physics.add.collider(my.sprite.player, this.waterLayer, () => {
+        }); 
+
+        this.physics.add.collider(my.sprite.enemy, this.groundLayer);
+        
+        this.physics.add.collider(my.sprite.player, this.waterLayer, () => {
             // If player collides with water, set the flag to true
             this.touchedSomething = true;
         });
+        
         // Handle collision detection with coins
         this.physics.add.overlap(my.sprite.player, this.coinGroup, (obj1, obj2) => {
             this.myScore += 1;
             my.text.score.setText("Score: " + this.myScore);
             obj2.destroy(); // remove coin on overlap
         });
+
+        this.physics.add.collider(my.sprite.player, my.sprite.enemy, this.handlePlayerEnemyCollision, null, this);
 
         this.physics.add.overlap(my.sprite.player, this.bottomFlag, (obj1, obj2) => {
             this.scene.start("endScene", { score: this.myScore });
@@ -208,6 +219,23 @@ class Platformer extends Phaser.Scene {
         // Start end scene if health reaches 0
         if (this.myHealth <= 0) {
             this.scene.start("endScene", { score: this.myScore });
+        }
+    }
+
+    handlePlayerEnemyCollision(player, enemy) {
+        // Decrease player's health/lives
+        this.myHealth -= 1;
+        my.text.health.setText("Health: " + this.myHealth);
+
+        // Check if player has run out of health
+        if (this.myHealth <= 0) {
+            // Player has lost all lives, start end scene or game over logic
+            this.scene.start("endScene", { score: this.myScore });
+        } else {
+            // Player still has lives, handle respawn logic or any other game behavior
+            // For example:
+            player.setX(30); // Reset player position
+            player.setY(200);
         }
     }
 
